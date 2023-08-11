@@ -20,8 +20,10 @@ const key = process.env.AZURE_KEY;
 const region = process.env.AZURE_REGION;
 //<voice name="en-US-JennyNeural">
 //<voice name="ar-TN-ReemNeural">
-let currentLanguage = "french";
+let currentLanguage = "";
 let didChangeLanguage = false;
+let triggerNumber = 0;
+
 /**
  * Node.js server code to convert text to speech
  * @returns stream
@@ -36,9 +38,9 @@ const textToSpeech = async (text, language, context) => {
         let speech = null;
         let ssml = null;
         let ssml2 = null;
+        triggerNumber += 1;
 
         let systemContent = null;
-        systemContent = context;
         ///ChatGPT: "Quoi de neuf chez TT ? Découvrez les services de Tunisie Telecom (TT), tels que proposés par l'utilisateur. Ne dépassez pas 40 mots et répondez dans la langue de l'utilisateur.
         /*if (language == "arabic") {
             systemContent = " أنت تشاتبوت مساعدة مفيدة من أورنج تونس ولديك جميع هذه المعلومات. المعلومات: اكتشف خدمات أورانج تونس: 1- حول أورانج تونس: أورانج تونس هو مشغل خاص للاتصالات في تونس. إنه نتيجة تحالف بين أورانج إس.أيه وشركة إنفستيك. بين الرموز المفيدة التي يمكنك استخدامها: تتبع الاستهلاك / المكافأة: نجمة 101 # بوابة الخدمات: نجمة 111 # اشحنني: نجمة 114 * الرقم # اتصل بي: نجمة 115 * الرقم # تحويل الرصيد: نجمة 116 نجمة الرقم نجمة المبلغ نجمة الرقم التعريفي # معرفة رقمي: نجمة 123 # إعدادات الإنترنت والرسائل القصيرة: نجمة 121 # الولاء لأورانج: نجمة 112 # لتتبع استهلاكك للشهر: نجمة 101 نجمة 4 # لمتابعة مكافأة الإنترنت المحمولة: نجمة 101 نجمة 5 # تحصيل الفواتير بمقدار 60 ثانية للمكالمات الوطنية إعادة شحن: نجمة 100 نجمة رمز الشحن # من بين عروض أورانج، نجد ثلاثة عروض مسبقة الدفع: إدوخ : مع عرض إضواءك، استفد من أرخص سعر للدقيقة في السوق واتصل بجميع المشغلين الثابتين والمحمولين في تونس بسعر 35 مليم في الدقيقة على مدار الساعة وطوال أيام الأسبوع ومدى الحياة. يستمر عرض إضواءك في تقديم أفضل سعر للدقيقة في السوق لجميع المشتركين، سواء القدامى أو الجدد. يمكنك طلب حزمة إضواءك التي تشمل 25 جيجابايت بسعر 23.750 دينار والاستفادة من التوصيل المجاني. بعد تفعيل عرضك، ستحصل تلقائيًا على 25 غيغابايت من الإنترنت المحمول صالحة لمدة 30 يومًا. تتبع استهلاكك عبر MyOrange. زان بلاس: مع عرض زن بلس، استفد من سعر دقيقة واحدة فقط نحو جميع المشغلين، بالإضافة إلى: رقمين مفضلين كل شهر. استهلك 10 دنانير واحصل على رقم مفضل من أورانج صالح حتى نهاية الشهر الحالي. استهلك 20 دينارًا واحصل على رقم مفضل لأي مشغل صالح حتى نهاية الشهر الحالي. عالمي: مع العرض الجديد علمي: اتصل في الداخل ونحو فرنسا وإيطاليا وبلجيكا وألمانيا وكندا بنفس السعر. استفد من سعر مميز (ثابت ومحمول) للتواصل مع أحبائك في تونس ودوليًا على مدار الساعة وطوال أيام الأسبوع وبدون قيود. تتم فواتير المكالمات الوطنية بالتدرج بمقدار 60 ثانية. يتم فواتير الاتصال بالدول غير المشمولة في العرض وغير المذكورة أعلاه بسعر الاتصال الدولي الحالي."
@@ -50,14 +52,37 @@ const textToSpeech = async (text, language, context) => {
             systemContent = "You are Orange Tunisia helpfull women assitant chatbot that has all these informations: Discover the services of Orange Tunisia: 1- About Orange Tunisia: Orange Tunisia is a private Tunisian telecommunications operator. It is the result of an alliance between Orange SA and the Investec company. Among the useful codes you can use: Consumption Tracking/Bonus: *101# Service Portal: *111# Recharge Me: 114number# Call Me Back: 115number# Credit Transfer: 116numberamountpin# Know My Number: *123# Internet and SMS settings: *121# Orange Loyalty: *112# To track your monthly consumption: 1014# To track your mobile internet bonus: 1015# Billing per 60-second intervals for national calls Recharge: 100recharge code# Among Orange's offers, we find three prepaid offers: A- EDAWAKH: With the Edawakh offer, benefit from the lowest per-minute price in the market and call all fixed and mobile operators in Tunisia for only 35 millimes per minute, 24/7 and for life. The Edawakh offer continues to provide all its subscribers, old and new, with the best per-minute rate in the market. You can order the Edawakh pack with 25 GB included for 23,750 Dinars and enjoy free delivery. Upon activating your offer, you will automatically receive 25 gigabytes of mobile internet valid for 30 days. Consumption tracking available on MyOrange. B- ZEN PLUS: With the Zen Plus offer, enjoy a single per-minute rate to all operators, as well as: Two favorite numbers each month: Consume 10 dinars and immediately get an Orange favorite number valid until the end of the current month. Consume 20 dinars and immediately get a favorite number on any operator valid until the end of the current month. C- ALAMI: With the new Alami offer, make national and international calls to France, Italy, Belgium, Germany, and Canada at the same price. Benefit from advantageous rates (fixed and mobile) to communicate with your loved ones in Tunisia and internationally, 24/7 and without conditions. Billing per 60-second intervals for national calls. Rates for countries not included in the offer and not mentioned above are charged at the applicable international rates.";
         }*/
 
-        if (currentLanguage != language) {
+        /*if (currentLanguage != language) {
             didChangeLanguage = true;
             currentLanguage = language;
         }
         else {
             didChangeLanguage = false;
+        }*/
+        
+        if (triggerNumber % 8 === 0) {
+            didChangeLanguage = true;
+        } else {
+            didChangeLanguage = false;
         }
-        speech = await askGPT(text, systemContent, didChangeLanguage);
+              context = "You are now a ChatBot Named LOUNA.\n" +
+            "you answer this questions:\n" +
+            "1.Is LOUNA available on all devices:\n" +
+            "LOUNA is currently available on Chrome, Safari, Edge browsers on PC, Android, and iOS iPhone.However, she is under development to work on Android and iOS applications, which will expand her availability to a wider range of devices.\n" +
+            "2.Can LOUNA can learn and adapt over time ?:\n" +
+            "Yes, absolutely! LOUNA is equipped with advanced Contextual AI technology, enabling her to learn and adapt from every interaction\n" +
+            "3.Can LOUNA work offline ?:\n" +
+            "LOUNA operates as an online AI assistant.As of now, she doesn't work offline. To utilize her features, an internet connection is required for seamless communication and real-time updates.\n" +
+            "4.Is my data secured with LOUNA:\n" +
+            "At LOUNA, we take data security and privacy very seriously.We adhere to strict data protection protocols, ensuring that your information is safeguarded from unauthorized access or misuse.Rest assured, your data is stored securely and treated with the utmost confidentiality.\n" +
+            "5.Is LOUNA compatible with all browsers ?:\n" +
+            "While LOUNA works smoothly on Chrome, Safari, and Edge browsers on PC, Android, and iOS iPhone, she currently doesn't support Opera and Firefox Speech API. Our team is continually working to enhance compatibility and expand LOUNA's reach across various browsers.\n" +
+            "6.How to use or integrate LOUNA ?:\n" +
+            "To integrate her into your website, all you need to do is provide us with your context - that includes information related to your offers and services.Our expert team will handle the integration process for you, making LOUNA available for your website visitors.\n" +
+            "Rules you must follow:\n" +
+            "1 - Show empathy in your answers make the discussion feel MORE HUMAN.\n" +
+            "2 - If the user contains bad words, be, nice and simply answer that you don't appreciate using bad words.";
+        speech = await askGPT(text, context, didChangeLanguage);
         //speech = "Je pense que vous voulez peut-être demander si Orange Tunisie propose des services liés à la pandémie de COVID-19. Cependant, je dois vous informer que je suis un chatbot et je ne suis pas en mesure de fournir des informations sur les services d'Orange Tunisie en rapport avec la pandémie de COVID-19. Je vous recommande de visiter leur site web ou de contacter leur service client pour avoir plus d'informations à ce sujet. Quant à la question des causes du COVID-19, il est connu que c'est un virus qui est apparu pour la première fois en Chine en décembre 2019. Les scientifiques pensent que le virus pourrait avoir été transmis des animaux aux humains, mais les recherches se poursuivent pour en savoir plus sur ses origines précises.";
 
         if (language == "arabic") {
