@@ -12,7 +12,7 @@ async function askGPT(prompt, systemContent, didChangeLanguage) {
   messages.push(newMessage);
   const completion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    max_tokens: 250,
+    max_tokens: 200,
     messages: [
       { role: "system", content: systemContent }, ...messages
     ]
