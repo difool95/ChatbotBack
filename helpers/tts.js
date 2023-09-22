@@ -49,7 +49,7 @@ const textToSpeech = async (text, language) => {
             let ssml2 = null;
             triggerNumber += 1;
 
-            if (triggerNumber % 8 === 0 || currentLanguage != language) {
+            if (triggerNumber % 4 === 0 || currentLanguage != language) {
                 didChangeLanguage = true;
                 currentLanguage = language;
             } else {
