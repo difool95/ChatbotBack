@@ -42,6 +42,7 @@ const textToSpeech = async (text, language) => {
                 console.error('Error reading the file:', err);
                 return;
             }
+          console.log("content is " + data);
             context = data;
             let speech = null;
             let ssml = null;
@@ -54,6 +55,7 @@ const textToSpeech = async (text, language) => {
             } else {
                 didChangeLanguage = false;
             }
+            console.log("context is " + context);
             speech = await askGPT(text, context, didChangeLanguage);
             //speech = "how can i help you my friend";
 
