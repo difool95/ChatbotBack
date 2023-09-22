@@ -35,14 +35,49 @@ const fileName = 'contextFile.txt';
 router.post('/SetupContext', function (req, res) {
   // Write the content to the file
   let context = req.body.context;
-  fs.writeFile(fileName, context, (err) => {
+
+
+  // Check if the file exists
+  fs.access(fileName, fs.constants.F_OK, (err) => {
+    if (err) {
+      // The file doesn't exist, so create it with the new text
+      fs.writeFile(fileName, context, 'utf8', (err) => {
+        if (err) {
+          console.error('Error creating the file:', err);
+        } else {
+          res.send("context updated");
+          console.log('File created with new content.');
+        }
+      });
+    } else {
+      // The file exists, so delete its content and append the new text
+      fs.truncate(fileName, 0, (err) => {
+        if (err) {
+          console.error('Error truncating the file:', err);
+        } else {
+          fs.appendFile(fileName, context, 'utf8', (err) => {
+            if (err) {
+              console.error('Error appending text to the file:', err);
+            } else {
+              res.send("context updated");
+              console.log('Text appended to the file after truncation.');
+            }
+          });
+        }
+      });
+    }
+  });
+
+
+
+  /*fs.writeFile(fileName, context, (err) => {
     if (err) {
       console.error('Error writing to the file:', err);
     } else {
       console.log(`'${context}' has been written to '${fileName}'`);
       res.send("context updated");
     }
-  });
+  });*/
 });
 
 router.post('/clearStorage', function (req, res) {
