@@ -22,6 +22,7 @@ const region = process.env.AZURE_REGION;
 //<voice name="ar-TN-ReemNeural">
 let currentLanguage = "french";
 let didChangeLanguage = false;
+let triggerNumber = 0;
 /**
  * Node.js server code to convert text to speech
  * @returns stream
@@ -36,7 +37,7 @@ const textToSpeech = async (text, language, context) => {
         let speech = null;
         let ssml = null;
         let ssml2 = null;
-
+        triggerNumber += 1;
         let systemContent = null;
         //systemContent = context;
         ///ChatGPT: "Quoi de neuf chez TT ? Découvrez les services de Tunisie Telecom (TT), tels que proposés par l'utilisateur. Ne dépassez pas 40 mots et répondez dans la langue de l'utilisateur.
@@ -50,13 +51,13 @@ const textToSpeech = async (text, language, context) => {
             //systemContent = "You are Orange Tunisia helpfull women assitant chatbot that has all these informations: Discover the services of Orange Tunisia: 1- About Orange Tunisia: Orange Tunisia is a private Tunisian telecommunications operator. It is the result of an alliance between Orange SA and the Investec company. Among the useful codes you can use: Consumption Tracking/Bonus: *101# Service Portal: *111# Recharge Me: 114number# Call Me Back: 115number# Credit Transfer: 116numberamountpin# Know My Number: *123# Internet and SMS settings: *121# Orange Loyalty: *112# To track your monthly consumption: 1014# To track your mobile internet bonus: 1015# Billing per 60-second intervals for national calls Recharge: 100recharge code# Among Orange's offers, we find three prepaid offers: A- EDAWAKH: With the Edawakh offer, benefit from the lowest per-minute price in the market and call all fixed and mobile operators in Tunisia for only 35 millimes per minute, 24/7 and for life. The Edawakh offer continues to provide all its subscribers, old and new, with the best per-minute rate in the market. You can order the Edawakh pack with 25 GB included for 23,750 Dinars and enjoy free delivery. Upon activating your offer, you will automatically receive 25 gigabytes of mobile internet valid for 30 days. Consumption tracking available on MyOrange. B- ZEN PLUS: With the Zen Plus offer, enjoy a single per-minute rate to all operators, as well as: Two favorite numbers each month: Consume 10 dinars and immediately get an Orange favorite number valid until the end of the current month. Consume 20 dinars and immediately get a favorite number on any operator valid until the end of the current month. C- ALAMI: With the new Alami offer, make national and international calls to France, Italy, Belgium, Germany, and Canada at the same price. Benefit from advantageous rates (fixed and mobile) to communicate with your loved ones in Tunisia and internationally, 24/7 and without conditions. Billing per 60-second intervals for national calls. Rates for countries not included in the offer and not mentioned above are charged at the applicable international rates.";
         }
 
-        if (currentLanguage != language) {
+        if (triggerNumber % 8 === 0 || currentLanguage != language) {
             didChangeLanguage = true;
             currentLanguage = language;
-        }
-        else {
+        } else {
             didChangeLanguage = false;
         }
+
         speech = await askGPT(text, context, didChangeLanguage);
         //speech = "how can i help you my friend";
 
