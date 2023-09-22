@@ -12,7 +12,7 @@ const host = 'https://mouvmntchatbotback.onrender.com'
 /* GET home page. */
 router.post('/talk', function (req, res) {
   let language = req.body.language;
-  textToSpeech(req.body.text, req.body.language, req.body.context)
+  textToSpeech(req.body.text, req.body.language)
     .then(result => {
       let { blendData, filename, filena } = result;
       axios.post(host + '/subtitle', { filena, language })
@@ -28,8 +28,21 @@ router.post('/talk', function (req, res) {
     .catch(err => {
       res.json({});
     });
+});
 
-
+// Specify the file name and content
+const fileName = 'contextFile.txt';
+router.post('/SetupContext', function (req, res) {
+  // Write the content to the file
+  let context = req.body.context;
+  fs.writeFile(fileName, context, (err) => {
+    if (err) {
+      console.error('Error writing to the file:', err);
+    } else {
+      console.log(`'${context}' has been written to '${fileName}'`);
+      res.send("context updated");
+    }
+  });
 });
 
 router.post('/clearStorage', function (req, res) {
