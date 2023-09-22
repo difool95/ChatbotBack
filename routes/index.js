@@ -12,7 +12,6 @@ const host = 'https://mouvmntchatbotback.onrender.com'
 /* GET home page. */
 router.post('/talk', function (req, res) {
   let language = req.body.language;
-  console.log(req.body.context);
   textToSpeech(req.body.text, req.body.language, req.body.context)
     .then(result => {
       let { blendData, filename, filena } = result;
