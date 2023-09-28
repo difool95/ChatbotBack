@@ -21,7 +21,7 @@ const region = process.env.AZURE_REGION;
 //<voice name="en-US-JennyNeural">
 //<voice name="ar-TN-ReemNeural">
 let currentLanguage = "french";
-let didChangeLanguage = false;
+let resetDiscussion = false;
 let triggerNumber = 0;
 /**
  * Node.js server code to convert text to speech
@@ -42,21 +42,19 @@ const textToSpeech = async (text, language) => {
                 console.error('Error reading the file:', err);
                 return;
             }
-          console.log("content is " + data);
             context = data;
             let speech = null;
             let ssml = null;
             let ssml2 = null;
             triggerNumber += 1;
 
-            if (triggerNumber % 4 === 0 || currentLanguage != language) {
-                didChangeLanguage = true;
+            if (triggerNumber % 24 === 0 || currentLanguage != language || text == "salut" || text == "bonjour" || text == "hello" || text == "hey") {
+                resetDiscussion = true;
                 currentLanguage = language;
             } else {
-                didChangeLanguage = false;
+                resetDiscussion = false;
             }
-            console.log("context is " + context);
-            speech = await askGPT(text, context, didChangeLanguage);
+            speech = await askGPT(text, context, resetDiscussion);
             //speech = "how can i help you my friend";
 
             if (language == "arabic") {
