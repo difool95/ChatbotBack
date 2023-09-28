@@ -8,6 +8,7 @@
   "dependencies": {
     "@deepgram/sdk": "^2.1.1",
     "arabic-name-to-en": "^1.0.6",
+    "axios": "^1.5.1",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
@@ -17,7 +18,7 @@
     "lodash": "^4.17.21",
     "microsoft-cognitiveservices-speech-sdk": "^1.23.0",
     "morgan": "~1.9.1",
-    "openai": "^3.2.1",
+    "openai": "^4.0.0",
     "pug": "2.0.0-beta11"
   }
 }
