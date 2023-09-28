@@ -1,26 +1,24 @@
-const { Configuration, OpenAIApi } = require("openai");
-
-const configuration = new Configuration({
+const OpenAI = require("openai");
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  organization: "org-4pZyMecDsAioe5GBBpOeSskR",
+  organization: "org-4pZyMecDsAioe5GBBpOeSskR"
 });
-const openai = new OpenAIApi(configuration);
 let messages = [];
 async function askGPT(prompt, systemContent, didChangeLanguage) {
   if (didChangeLanguage) messages = [];
   const newMessage = { role: "user", content: prompt }
   messages.push(newMessage);
-  const completion = await openai.createChatCompletion({
+  const completion = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
-    max_tokens: 250,
+    max_tokens: 512,
     messages: [
       { role: "system", content: systemContent }, ...messages
     ]
-  })
-  const newAssistantMessage = { role: "assistant", content: completion.data.choices[0].message.content }
+  });
+  const newAssistantMessage = { role: "assistant", content: completion.choices[0].message.content }
   messages.push(newAssistantMessage);
   console.log(messages);
-  return completion.data.choices[0].message.content
+  return completion.choices[0].message.content
   /* const completion = await openai.createCompletion({
      model: "text-davinci-003",
      temperature: 0.2,
