@@ -9,18 +9,13 @@ const fs = require('fs');
 const path = require('path');
 let context = "";
 let SSML = '';
-let SSML2 = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">
-<voice name="en-US-JennyNeural">
-  <mstts:viseme type="FacialExpression"/>
-  __TEXT__
-</voice>
-</speak>`;
+
 
 const key = process.env.AZURE_KEY;
 const region = process.env.AZURE_REGION;
 //<voice name="en-US-JennyNeural">
 //<voice name="ar-TN-ReemNeural">
-let currentLanguage = "french";
+let currentLanguage = "english";
 let resetDiscussion = false;
 let triggerNumber = 0;
 /**
@@ -31,8 +26,7 @@ let triggerNumber = 0;
  * @param {*} text text to convert to audio/speech
  * @param {*} filename optional - best for long text - temp file for converted speech/audio
  */
-const textToSpeech = async (text, language) => {
-
+const textToSpeech = async (text, language, reset) => {
     // convert callback function to promise
     return new Promise(async (resolve, reject) => {
         //READ CONTEXT FROM THE FILE
@@ -45,17 +39,15 @@ const textToSpeech = async (text, language) => {
             context = data;
             let speech = null;
             let ssml = null;
-            let ssml2 = null;
-            triggerNumber += 1;
-
-            if (triggerNumber % 24 === 0 || currentLanguage != language || text == "salut" || text == "bonjour" || text == "hello" || text == "hey") {
+            if (reset) {
                 resetDiscussion = true;
-                currentLanguage = language;
-            } else {
+            }
+            else {
                 resetDiscussion = false;
             }
+            console.log(context);
             speech = await askGPT(text, context, resetDiscussion);
-            //speech = "how can i help you my friend";
+            // speech = "how can i help you my friend, do you think that we need all of that";
 
             if (language == "arabic") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="ar-TN">
@@ -65,7 +57,6 @@ const textToSpeech = async (text, language) => {
             </voice>
             </speak>`;
                 ssml = SSML.replace("__TEXT__", speech);
-                ssml2 = SSML2.replace("__TEXT__", translate(speech));
             }
             else if (language == "french") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="fr-FR">
@@ -75,7 +66,6 @@ const textToSpeech = async (text, language) => {
             </voice>
             </speak>`;
                 ssml = SSML.replace("__TEXT__", speech);
-                ssml2 = SSML2.replace("__TEXT__", speech);
             }
             else if (language == "english") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">
@@ -85,7 +75,6 @@ const textToSpeech = async (text, language) => {
             </voice>
             </speak>`;
                 ssml = SSML.replace("__TEXT__", speech);
-                ssml2 = SSML2.replace("__TEXT__", speech);
             }
 
 
@@ -94,26 +83,19 @@ const textToSpeech = async (text, language) => {
             speechConfig.speechSynthesisOutputFormat = 5; // mp3
 
             let audioConfig = null;
-            let audioConfig2 = null;
-            // if (filename) {
             let randomString = Math.random().toString(36).slice(2, 7);
             let filename = `./public/speech-${randomString}.mp3`;
             audioConfig = sdk.AudioConfig.fromAudioFileOutput(filename);
-            // }
 
-            let randomString2 = Math.random().toString(36).slice(2, 7);
-            let filename2 = `./public/speech-${randomString2}.mp3`;
-            audioConfig2 = sdk.AudioConfig.fromAudioFileOutput(filename2);
 
             let blendData = [];
             let timeStep = 1 / 60;
             let timeStamp = 0;
             const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
 
-            const synthesizer2 = new sdk.SpeechSynthesizer(speechConfig, audioConfig2);
 
             // Subscribes to viseme received event
-            synthesizer2.visemeReceived = function (s, e) {
+            synthesizer.visemeReceived = function (s, e) {
                 // `Animation` is an xml string for SVG or a json string for blend shapes
 
                 var animation = JSON.parse(e.animation);
@@ -132,34 +114,17 @@ const textToSpeech = async (text, language) => {
                 });
 
             }
-
-
             synthesizer.speakSsmlAsync(
 
                 ssml,
                 result => {
                     synthesizer.close();
-                    //resolve({ blendData, filename: `/speech-${randomString}.mp3` });
-
+                    resolve({ blendData, filename: `/speech-${randomString}.mp3`, filena: randomString, speech: speech });
                 },
                 error => {
                     synthesizer.close();
                     reject(error);
                 });
-
-            synthesizer2.speakSsmlAsync(
-
-                ssml2,
-                result => {
-                    synthesizer2.close();
-                    resolve({ blendData, filename: `/speech-${randomString}.mp3`, filena: randomString, speech: speech });
-
-                },
-                error => {
-                    synthesizer2.close();
-                    reject(error);
-                });
-
         });
     });
 
