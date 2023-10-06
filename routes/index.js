@@ -12,7 +12,7 @@ const host = 'https://mouvmntchatbotback.onrender.com'
 /* GET home page. */
 router.post('/talk', function (req, res) {
   let language = req.body.language;
-  textToSpeech(req.body.text, req.body.language)
+  textToSpeech(req.body.text, req.body.language, req.body.reset)
     .then(result => {
       let { blendData, filename, filena } = result;
       axios.post(host + '/subtitle', { filena, language })
