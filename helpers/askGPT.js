@@ -4,20 +4,19 @@ const openai = new OpenAI({
   organization: "org-4pZyMecDsAioe5GBBpOeSskR"
 });
 let messages = [];
-async function askGPT(prompt, systemContent, didChangeLanguage) {
-  if (didChangeLanguage) messages = [];
+async function askGPT(prompt, systemContent, reset) {
+  if (reset) messages = [];
   const newMessage = { role: "user", content: prompt }
   messages.push(newMessage);
   const completion = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
-    max_tokens: 512,
+    max_tokens: 256,
     messages: [
       { role: "system", content: systemContent }, ...messages
     ]
   });
   const newAssistantMessage = { role: "assistant", content: completion.choices[0].message.content }
   messages.push(newAssistantMessage);
-  console.log(messages);
   return completion.choices[0].message.content
   /* const completion = await openai.createCompletion({
      model: "text-davinci-003",
@@ -28,5 +27,6 @@ async function askGPT(prompt, systemContent, didChangeLanguage) {
    })
    return completion.data.choices[0].text*/
 }
+
 
 module.exports = askGPT
