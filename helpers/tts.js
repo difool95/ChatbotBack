@@ -29,7 +29,7 @@ let triggerNumber = 0;
 const textToSpeech = async (text, language, reset) => {
     // convert callback function to promise
     return new Promise(async (resolve, reject) => {
-        const filePath = null;
+        let filePath = null;
         //READ CONTEXT FROM THE FILE
         if (language == "french") {
             filePath = path.join(__dirname, '../', 'contextFileFrench.txt'); // Replace with the actual file path
