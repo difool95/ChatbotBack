@@ -29,8 +29,14 @@ let triggerNumber = 0;
 const textToSpeech = async (text, language, reset) => {
     // convert callback function to promise
     return new Promise(async (resolve, reject) => {
+        const filePath = null;
         //READ CONTEXT FROM THE FILE
-        const filePath = path.join(__dirname, '../', 'contextFile.txt'); // Replace with the actual file path
+        if (language == "french") {
+            filePath = path.join(__dirname, '../', 'contextFileFrench.txt'); // Replace with the actual file path
+        }
+        else if (language == "english") {
+            filePath = path.join(__dirname, '../', 'contextFileEnglish.txt'); // Replace with the actual file path
+        }
         fs.readFile(filePath, 'utf8', async (err, data) => {
             if (err) {
                 console.error('Error reading the file:', err);
@@ -45,9 +51,8 @@ const textToSpeech = async (text, language, reset) => {
             else {
                 resetDiscussion = false;
             }
-            console.log(context);
             speech = await askGPT(text, context, resetDiscussion);
-            // speech = "how can i help you my friend, do you think that we need all of that";
+            //speech = "Hello bilel how are you today, the news are some thing happened in palestine this week and it's real catastrophic, Hello bilel how are you today, the news are some thing happened in palestine this week and it's real catastrophic, Hello bilel how are you today, the news are some thing happened in palestine this week and it's real catastrophic"
 
             if (language == "arabic") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="ar-TN">
