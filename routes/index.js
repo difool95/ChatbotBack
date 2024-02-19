@@ -7,7 +7,7 @@ const deepgram = new Deepgram('c5da237b45393667a1f2866a3593cf0f20580d83')
 const axios = require('axios');
 const mime = require('mime-types');
 const path = require('path');
-//const host = 'http://localhost:5000'
+// const host = 'http://localhost:5000'
 const host = 'https://mouvmntchatbotback.onrender.com'
 /* GET home page. */
 router.post('/talk', function (req, res) {
@@ -31,17 +31,19 @@ router.post('/talk', function (req, res) {
 });
 
 // Specify the file name and content
-const fileName = 'contextFile.txt';
-router.post('/SetupContext', function (req, res) {
+const fileNameEnglish = 'contextFileEnglish.txt';
+const fileNameFrench = 'contextFileFrench.txt';
+
+router.post('/SetupContextEnglish', function (req, res) {
   // Write the content to the file
   let context = req.body.context;
 
 
   // Check if the file exists
-  fs.access(fileName, fs.constants.F_OK, (err) => {
+  fs.access(fileNameEnglish, fs.constants.F_OK, (err) => {
     if (err) {
       // The file doesn't exist, so create it with the new text
-      fs.writeFile(fileName, context, 'utf8', (err) => {
+      fs.writeFile(fileNameEnglish, context, 'utf8', (err) => {
         if (err) {
           console.error('Error creating the file:', err);
         } else {
@@ -51,11 +53,11 @@ router.post('/SetupContext', function (req, res) {
       });
     } else {
       // The file exists, so delete its content and append the new text
-      fs.truncate(fileName, 0, (err) => {
+      fs.truncate(fileNameEnglish, 0, (err) => {
         if (err) {
           console.error('Error truncating the file:', err);
         } else {
-          fs.appendFile(fileName, context, 'utf8', (err) => {
+          fs.appendFile(fileNameEnglish, context, 'utf8', (err) => {
             if (err) {
               console.error('Error appending text to the file:', err);
             } else {
@@ -67,17 +69,43 @@ router.post('/SetupContext', function (req, res) {
       });
     }
   });
+});
+
+router.post('/SetupContextFrench', function (req, res) {
+  // Write the content to the file
+  let context = req.body.context;
 
 
-
-  /*fs.writeFile(fileName, context, (err) => {
+  // Check if the file exists
+  fs.access(fileNameFrench, fs.constants.F_OK, (err) => {
     if (err) {
-      console.error('Error writing to the file:', err);
+      // The file doesn't exist, so create it with the new text
+      fs.writeFile(fileNameFrench, context, 'utf8', (err) => {
+        if (err) {
+          console.error('Error creating the file:', err);
+        } else {
+          res.send("context updated");
+          console.log('File created with new content.');
+        }
+      });
     } else {
-      console.log(`'${context}' has been written to '${fileName}'`);
-      res.send("context updated");
+      // The file exists, so delete its content and append the new text
+      fs.truncate(fileNameFrench, 0, (err) => {
+        if (err) {
+          console.error('Error truncating the file:', err);
+        } else {
+          fs.appendFile(fileNameFrench, context, 'utf8', (err) => {
+            if (err) {
+              console.error('Error appending text to the file:', err);
+            } else {
+              res.send("context updated");
+              console.log('Text appended to the file after truncation.');
+            }
+          });
+        }
+      });
     }
-  });*/
+  });
 });
 
 router.post('/clearStorage', function (req, res) {
