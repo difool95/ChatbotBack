@@ -33,7 +33,7 @@ router.post('/talk', function (req, res) {
 // Specify the file name and content
 const fileNameEnglish = 'contextFileEnglish.txt';
 const fileNameFrench = 'contextFileFrench.txt';
-
+const fileNameArabic = 'contextFileArabic.txt';
 router.post('/SetupContextEnglish', function (req, res) {
   // Write the content to the file
   let context = req.body.context;
@@ -95,6 +95,43 @@ router.post('/SetupContextFrench', function (req, res) {
           console.error('Error truncating the file:', err);
         } else {
           fs.appendFile(fileNameFrench, context, 'utf8', (err) => {
+            if (err) {
+              console.error('Error appending text to the file:', err);
+            } else {
+              res.send("context updated");
+              console.log('Text appended to the file after truncation.');
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+router.post('/SetupContextArabic', function (req, res) {
+  // Write the content to the file
+  let context = req.body.context;
+
+
+  // Check if the file exists
+  fs.access(fileNameArabic, fs.constants.F_OK, (err) => {
+    if (err) {
+      // The file doesn't exist, so create it with the new text
+      fs.writeFile(fileNameArabic, context, 'utf8', (err) => {
+        if (err) {
+          console.error('Error creating the file:', err);
+        } else {
+          res.send("context updated");
+          console.log('File created with new content.');
+        }
+      });
+    } else {
+      // The file exists, so delete its content and append the new text
+      fs.truncate(fileNameArabic, 0, (err) => {
+        if (err) {
+          console.error('Error truncating the file:', err);
+        } else {
+          fs.appendFile(fileNameArabic, context, 'utf8', (err) => {
             if (err) {
               console.error('Error appending text to the file:', err);
             } else {
