@@ -68,7 +68,7 @@ const textToSpeech = async (text, language, reset) => {
             }
             else if (language == "french") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="fr-FR">
-            <voice name="fr-FR-CoralieNeural">
+            <voice name="fr-FR-AlainNeural">
             <mstts:viseme type="FacialExpression"/>
             __TEXT__
             </voice>
@@ -77,7 +77,7 @@ const textToSpeech = async (text, language, reset) => {
             }
             else if (language == "english") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="en-US">
-            <voice name="en-US-JennyNeural">
+            <voice name="en-US-AndrewMultilingualNeural">
             <mstts:viseme type="FacialExpression"/>
             __TEXT__
             </voice>
