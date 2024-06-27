@@ -40,6 +40,7 @@ const textToSpeech = async (text, language, reset) => {
         else if (language == "arabic") {
             filePath = path.join(__dirname, '../', 'contextFileArabic.txt'); // Replace with the actual file path
         }
+        console.log('aa');
         fs.readFile(filePath, 'utf8', async (err, data) => {
             if (err) {
                 console.error('Error reading the file:', err);
