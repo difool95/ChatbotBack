@@ -16,7 +16,7 @@ const region = process.env.AZURE_REGION;
 //<voice name="ar-TN-ReemNeural">
 let currentLanguage = "english";
 let resetDiscussion = false;
-let triggerNumber = 0;
+let triggerNumber = 2;
 /**
  * Node.js server code to convert text to speech
  * @returns stream
