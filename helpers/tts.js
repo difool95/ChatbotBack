@@ -136,8 +136,7 @@ const textToSpeech = async (text, language, reset) => {
         });
     });
 };
-
-function incrementTrigger {
+const incrementTrigger = async () => {
     console.log("trigger number is");
     console.log(triggerNumber);
     const newValue = triggerNumber;
