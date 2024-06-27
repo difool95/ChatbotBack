@@ -16,7 +16,7 @@ const region = process.env.AZURE_REGION;
 //<voice name="ar-TN-ReemNeural">
 let currentLanguage = "english";
 let resetDiscussion = false;
-let triggerNumber = 2;
+let triggerNumber = 0;
 /**
  * Node.js server code to convert text to speech
  * @returns stream
@@ -55,7 +55,8 @@ const textToSpeech = async (text, language, reset) => {
                 resetDiscussion = false;
             }
             speech = await askGPT(text, context, resetDiscussion);
-            triggerNumber += 1;            
+            triggerNumber += 1;
+            incrementTrigger();
             if (language == "arabic") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="ar-TN">
             <voice name="ar-TN-ReemNeural">
@@ -136,7 +137,9 @@ const textToSpeech = async (text, language, reset) => {
     });
 };
 
-const incrementTrigger = async () => {
+function incrementTrigger {
+    console.log("trigger number is");
+    console.log(triggerNumber);
     const newValue = triggerNumber;
     const filePath = path.join(__dirname, '../public/stylesheets', 'logs.txt');
 
