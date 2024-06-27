@@ -30,6 +30,7 @@ router.post('/talk', function (req, res) {
     });
 });
 
+
 // Specify the file name and content
 const fileNameEnglish = 'contextFileEnglish.txt';
 const fileNameFrench = 'contextFileFrench.txt';
