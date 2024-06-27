@@ -173,7 +173,7 @@ const AddQuestion = async (question) => {
     // Read the file
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
-            return res.status(500).send('Error reading the file.');
+            console.log('Error reading the file.');
         }
 
         // Append the new value to the file content
@@ -182,9 +182,9 @@ const AddQuestion = async (question) => {
         // Write the modified data back to the file
         fs.writeFile(filePath, modifiedData, 'utf8', (err) => {
             if (err) {
-                return res.status(500).send('Error writing to the file.');
+                console.log('Error writing to the file.');
             }
-            res.send('Value appended successfully.');
+            console.log('Value appended successfully.');
         });
     });
 }
