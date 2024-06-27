@@ -158,9 +158,9 @@ const incrementTrigger = async () => {
         // Write the modified data back to the file
         fs.writeFile(filePath, modifiedData, 'utf8', (err) => {
             if (err) {
-                return res.status(500).send('Error writing to the file.');
+                console.log('Error writing to the file.');
             }
-            res.send('File modified successfully.');
+            console.log('File modified successfully.');
         });
     });
 }
