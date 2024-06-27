@@ -10,7 +10,6 @@ const path = require('path');
 let context = "";
 let SSML = '';
 
-
 const key = process.env.AZURE_KEY;
 const region = process.env.AZURE_REGION;
 //<voice name="en-US-JennyNeural">
@@ -40,7 +39,7 @@ const textToSpeech = async (text, language, reset) => {
         else if (language == "arabic") {
             filePath = path.join(__dirname, '../', 'contextFileArabic.txt'); // Replace with the actual file path
         }
-        console.log('aa');
+        
         fs.readFile(filePath, 'utf8', async (err, data) => {
             if (err) {
                 console.error('Error reading the file:', err);
@@ -56,8 +55,7 @@ const textToSpeech = async (text, language, reset) => {
                 resetDiscussion = false;
             }
             speech = await askGPT(text, context, resetDiscussion);
-            //speech = "Hello bilel how are you today, the news are some thing happened in palestine this week and it's real catastrophic, Hello bilel how are you today, the news are some thing happened in palestine this week and it's real catastrophic, Hello bilel how are you today, the news are some thing happened in palestine this week and it's real catastrophic"
-
+            triggerNumber += 1;            
             if (language == "arabic") {
                 SSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xml:lang="ar-TN">
             <voice name="ar-TN-ReemNeural">
@@ -136,9 +134,34 @@ const textToSpeech = async (text, language, reset) => {
                 });
         });
     });
-
-
-
 };
+
+const incrementTrigger = async () => {
+    const newValue = triggerNumber;
+    const filePath = path.join(__dirname, '../public/stylesheets', 'logs.txt');
+
+    // Read the file
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading the file.');
+        }
+
+        // Split the file into lines and modify the first line
+        let lines = data.split('\n');
+        lines[0] = newValue;
+
+        // Join the lines back into a single string
+        const modifiedData = lines.join('\n');
+
+        // Write the modified data back to the file
+        fs.writeFile(filePath, modifiedData, 'utf8', (err) => {
+            if (err) {
+                return res.status(500).send('Error writing to the file.');
+            }
+            res.send('File modified successfully.');
+        });
+    });
+}
+
 
 module.exports = textToSpeech;
