@@ -54,6 +54,7 @@ const textToSpeech = async (text, language, reset) => {
             else {
                 resetDiscussion = false;
             }
+            AddQuestion(text);
             speech = await askGPT(text, context, resetDiscussion);
             triggerNumber += 1;
             incrementTrigger();
@@ -165,5 +166,27 @@ const incrementTrigger = async () => {
     });
 }
 
+const AddQuestion = async (question) => {
+    const newValue = "question : " + question;
+    const filePath = path.join(__dirname, '../public/stylesheets', 'logs.txt');
+
+    // Read the file
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading the file.');
+        }
+
+        // Append the new value to the file content
+        const modifiedData = `${data}\n${newValue}`;
+
+        // Write the modified data back to the file
+        fs.writeFile(filePath, modifiedData, 'utf8', (err) => {
+            if (err) {
+                return res.status(500).send('Error writing to the file.');
+            }
+            res.send('Value appended successfully.');
+        });
+    });
+}
 
 module.exports = textToSpeech;
